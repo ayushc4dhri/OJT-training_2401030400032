@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OOG | Premium Gaming</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+    .basic-slider {
+    display: flex;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+        :root {
+            --primary-red: #e61e2d;
+            --dark-red: #8b0000;
+            --bg-black: #0a0a0a;
+            --card-bg: #161616;
+            --text-gray: #b0b0b0;
+        }
+
+        body {
+            background-color: var(--bg-black);
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            padding: 30px 0;
+            background: linear-gradient(to bottom, #000, var(--bg-black));
+        }
+
+        #logo img {
+            height: 90px;
+            filter: drop-shadow(0 0 10px rgba(230, 30, 45, 0.3));
+            transition: transform 0.3s ease;
+        }
+
+        #logo img:hover {
+            transform: scale(1.05);
+        }
+
+        header {
+            display: flex;
+            align-items: center; 
+            justify-content: space-between; 
+            padding: 0 8%;
+            height: 70px;
+            background: linear-gradient(90deg, var(--dark-red) 0%, var(--primary-red) 100%);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: opacity 0.3s;
+        }
+
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+
+        .apps_store {
+            font-size: 14px;
+        }
+
+        .login-trigger {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-trigger:hover {
+            background: white;
+            color: var(--primary-red);
+        }
+        .basic-slider {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            height: 600px;
+            margin: 40px auto;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory; 
+            scroll-behavior: smooth;
+            border-radius: 20px;
+            border: 1px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            scrollbar-width: none; 
+        }
+
+        .basic-slider::-webkit-scrollbar { display: none; }
+
+        .snap-slide {
+            min-width: 100%;
+            height: 100%;
+            scroll-snap-align: start; 
+            position: relative;
+        }
+
+        .snap-slide::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 50%;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+        }
+
+        .snap-slide img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .label {
+            position: absolute;
+            bottom: 40px;
+            left: 40px;
+            z-index: 2;
+            background: var(--primary-red);
+            color: white;
+            padding: 10px 25px;
+            font-weight: 800;
+            font-size: 24px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(230, 30, 45, 0.4);
+        }
+
+        h2 {
+            margin-top: 60px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        table {
+            width: 90%;
+            max-width: 1100px;
+            margin: 30px auto 80px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        th {
+            background-color: transparent;
+            color: var(--text-gray);
+            text-transform: uppercase;
+            font-size: 12px;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            background-color: var(--card-bg);
+            padding: 20px;
+            font-size: 15px;
+        }
+
+        td:first-child { border-radius: 10px 0 0 10px; border-left: 3px solid var(--primary-red); }
+        td:last-child { border-radius: 0 10px 10px 0; }
+
+        tr:hover td {
+            background-color: #222;
+            transform: translateY(-2px);
+            transition: all 0.2s ease;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            padding: 40px;
+            border-radius: 25px;
+            width: 400px;
+            border: 1px solid #333;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .modal-content h3 { font-size: 28px; margin-bottom: 20px; color: var(--primary-red); }
+
+        .modal-content input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #333;
+            color: white;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .modal-content input:focus { border-color: var(--primary-red); }
+
+        .submit-btn {
+            background: var(--primary-red);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(230, 30, 45, 0.3);
+        }
+
+        .submit-btn:hover { background: #ff2e3d; }
+
+        .close-btn {
+            float: right;
+            cursor: pointer;
+            font-size: 20px;
+            color: #555;
+        }
+
+.social-login {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #333;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    transition: transform 0.2s, opacity 0.2s;
+}
+
+.social-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+.google-btn {
+    background: white;
+    color: #000;
+}
+
+.fb-btn {
+    background: #1877F2;
+    color: white;
+}
+
+.social-btn img {
+    height: 20px;
+    width: 20px;
+}
+    </style>
+</head>
+<body>
+
+    <div class="logo-container">
+        <div id="logo">
+            <img src="https://steamunlocked.org/wp-content/uploads/2025/10/SteamUnlocked.png" alt="Logo">
+        </div>
+    </div>
+
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Competitive</a></li>
+                <li><a href="#">Casual</a></li>
+                <li><a href="#">Puzzle</a></li>
+                <li><a href="#">Survival</a></li>
+                <li><a href="#">horror</a></li>
+            </ul>
+        </nav>
+        <div class="apps_store">
+            <span class="login-trigger" onclick="openModal()">LOGIN / REGISTER</span>
+        </div>
+    </header>
+
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    
+    <div id="loginForm">
+        <h3>Welcome Back</h3>
+        <input type="text" placeholder="Username">
+        <input type="password" placeholder="Password">
+        <button class="submit-btn">LOGIN</button>
+        
+        <div class="social-login">
+            <button class="social-btn google-btn">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
+                Sign in with Google
+            </button>
+            <button class="social-btn fb-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg" alt="FB">
+                Sign in with Facebook
+            </button>
+        </div>
+
+        <p style="font-size: 12px; color: #666; margin-top: 20px; cursor:pointer" onclick="toggleForms()">
+            No account? <span style="color:var(--primary-red)">Create one</span>
+        </p>
+    </div>
+
+    <div id="registerForm" style="display:none;">
+        <h3>Join the Club</h3>
+        <input type="text" placeholder="Username">
+        <input type="text" placeholder="DD/MM/YYYY">
+        <input type="email" placeholder="Email Address">
+        <input type="password" placeholder="Password">
+        <button class="submit-btn">REGISTER</button>
+
+        <div class="social-login">
+            <button class="social-btn google-btn">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" alt="Google">
+                Sign up with Google
+            </button>
+            <button class="social-btn fb-btn">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b9/2023_Facebook_icon.svg" alt="FB">
+                Sign up with Facebook
+            </button>
+        </div>
+
+        <p style="font-size: 12px; color: #666; margin-top: 20px; cursor:pointer" onclick="toggleForms()">
+            Have an account? <span style="color:var(--primary-red)">Log in</span>
+        </p>
+    </div>
+</div>
+    </div>
+
+    <div class="basic-slider" id="mainSlider">
+        <div class="snap-slide">
+            <img src="https://images8.alphacoders.com/132/1329760.jpeg" alt="CS2">
+            <div class="label">CS2</div>
+        </div>
+        <div class="snap-slide">
+            <img src="https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/0c67438c8b3a418b5ca28f9f234506745493ae42-854x484.png?accountingTag=VAL" alt="VALORANT">
+            <div class="label">VALORANT</div>
+        </div>
+        <div class="snap-slide">
+            <img src="https://wallpaperaccess.com/full/26417427.jpg" alt="PRAGMATA">
+            <div class="label">PRAGMATA</div>
+        </div>
+        <div class="snap-slide">
+            <img src="https://imgs.search.brave.com/pim1v9R7ZU8O_peo59C0AJZUGcaE4FgUWgpbxdVAFYE/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJjYXZlLmNv/bS93cC93cDE2MDYy/ODkxLmpwZw" alt="WHERE WINDS MEET">
+            <div class="label">WHERE WINDS MEET</div>
+        </div>
+    </div>
+
+    <h2 style="text-align:center;">Trending Games</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Game Title</th>
+                <th>Category</th>
+                <th>Player Base</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Counter-Strike 2</td><td>Competitive FPS</td><td>1.2M Online</td></tr>
+            <tr><td>VALORANT</td><td>Tactical Shooter</td><td>800K Online</td></tr>
+            <tr><td>Minecraft</td><td>Sandbox Survival</td><td>Unlimited</td></tr>
+            <tr><td>Fortnite</td><td>Battle Royale</td><td>2.5M Online</td></tr>
+        </tbody>
+    </table>
+
+    <script>
+        const modal = document.getElementById('modalOverlay');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+
+        function openModal() { modal.style.display = 'flex'; }
+        function closeModal() { modal.style.display = 'none'; }
+        function toggleForms() {
+            loginForm.style.display = loginForm.style.display === 'none' ? 'block' : 'none';
+            registerForm.style.display = registerForm.style.display === 'none' ? 'block' : 'none';
+        }
+        window.onclick = function(e) { if (e.target == modal) closeModal(); }
+    const slider = document.getElementById('mainSlider');
+
+    function startAutoPlay() {
+        const isAtEnd = slider.scrollLeft + slider.offsetWidth >= slider.scrollWidth;
+
+        if (isAtEnd) {
+            slider.scrollTo({ left: 0 });
+        } else {
+            slider.scrollBy({ left: slider.offsetWidth });
+        }
+    }
+
+    setInterval(startAutoPlay, 4000);
+    </script>    
+</body>
+</html>
