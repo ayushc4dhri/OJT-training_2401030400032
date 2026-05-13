@@ -1,0 +1,204 @@
+<html>
+<head>
+<title>OOG</title>
+</head>
+<body>
+   <style>
+    /* TABLE */
+
+table {
+    width: 80%;
+    margin: 40px auto;
+    border-collapse: collapse;
+    font-family: sans-serif;
+    background-color: #1b1b1b;
+    color: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th {
+    background-color: crimson;
+    padding: 15px;
+}
+
+td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #333;
+}
+
+tr:hover {
+    background-color: #2a2a2a;
+}
+    header {
+        display: flex;
+        align-items: center; 
+        justify-content: space-between; 
+        padding: 10px 5%;
+        background-color: #000000;
+        color: rgb(229, 89, 127);
+        font-family: sans-serif;
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+    }
+
+    #logo img {
+        height: 40px;
+        margin-right: 20px;
+    }
+
+    nav ul {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    nav ul li {
+        margin: 0 15px;
+    }
+
+    nav ul li a {
+        color: rgb(237, 11, 11);
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .auth-links a {
+        color: #090909;
+        text-decoration: none;
+    }
+    .basic-slider {
+        display: flex;
+        width: 90%;
+        max-width: 1100px;
+        height: 600px;
+        margin: 30px auto;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory; 
+        scroll-behavior: smooth;
+        
+        border-radius: 15px;
+        border: 4px solid #0c0c0c;
+    }
+    .snap-slide {
+        min-width: 100%;
+        height: 100%;
+        scroll-snap-align: start; 
+        position: relative;
+    }
+
+    .snap-slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .label {
+        position: absolute;
+        bottom: 20px;
+        left: 20px;
+        background: hsl(150, 60%, 55%);
+        color: white;
+        padding: 8px 15px;
+        font-family: sans-serif;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+    .basic-slider::-webkit-scrollbar {
+        display: none;
+    }
+    .basic-slider {
+        -ms-overflow-style: none;  
+        scrollbar-width: none;  
+    }
+</style>
+    <header>
+    <div id="logo">
+    </div>
+    <div id="logo">
+        <img src="c:\Users\rajes\OneDrive\Desktop\game-store-logo-template-design_316488-1493.avif" alt="Game Store">
+    </div>
+    <nav>
+        <ul>
+            <li><a href="#">Home</a></li>
+            <li><a href="#">Competitive</a></li>
+            <li><a href="#">casual</a></li>
+            <li><a href="#">Puzzle</a></li>
+        </ul>
+    </nav>
+    <div class="apps_store">
+        <span>Hello, Gamers!</span> | 
+        <a href="#">Login/Register</a>
+    </div>
+</header>
+<div class="basic-slider">
+    <div class="snap-slide">
+        <img src="https://images8.alphacoders.com/132/1329760.jpeg" alt="CS2">
+        <div class="label">CS2</div>
+    </div>
+    <div class="snap-slide">
+        <img src="https://cmsassets.rgpub.io/sanity/images/dsfx7636/news/0c67438c8b3a418b5ca28f9f234506745493ae42-854x484.png?accountingTag=VAL" alt="VALORANT">
+        <div class="label">VALORANT</div>
+    </div>
+    <div class="snap-slide">
+        <img src="https://wallpaperaccess.com/full/26417427.jpg" alt="PRAGMATA">
+        <div class="label">PRAGMATA</div>
+    </div>
+    <div class="snap-slide">
+        <img src="https://imgs.search.brave.com/Vtxou8HiVmMaop40sE97aB-OFlv-Uwtqqed4WOF1cBI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvaGQvd2hl/cmUtd2luZHMtbWVl/dC1nYW1lLWJ1YXVk/ZG5hcHhqOThsMmgu/anBn" alt="WHERE WINDS MEET">
+        <div class="label">WHERE WINDS MEET</div>
+    </div>
+</div>
+<h2 style="text-align:center; color:white; font-family:sans-serif;">
+    Popular Games
+</h2>
+
+<table>
+    <tr>
+        <th>Game Name</th>
+        <th>Type</th>
+        <th>Players</th>
+    </tr>
+
+    <tr>
+        <td>CS2</td>
+        <td>Competitive FPS</td>
+        <td>10 Players</td>
+    </tr>
+
+    <tr>
+        <td>VALORANT</td>
+        <td>Tactical Shooter</td>
+        <td>10 Players</td>
+    </tr>
+
+    <tr>
+        <td>Minecraft</td>
+        <td>Sandbox Survival</td>
+        <td>1-100 Players</td>
+    </tr>
+
+    <tr>
+        <td>Fortnite</td>
+        <td>Battle Royale</td>
+        <td>100 Players</td>
+    </tr>
+
+    <tr>
+        <td>Among Us</td>
+        <td>Party / Strategy</td>
+        <td>4-15 Players</td>
+    </tr>
+
+    <tr>
+        <td>Rocket League</td>
+        <td>Sports / Racing</td>
+        <td>6 Players</td>
+    </tr>
+</table>
+</body>
+</html>
