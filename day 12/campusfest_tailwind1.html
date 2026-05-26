@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CampusFest.dev — Annual Campus Tech Festival</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+
+  <!-- Tailwind (used only for the nav) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            head: ['Syne', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace'],
+          },
+          colors: {
+            accent: '#6c63ff',
+            muted:  '#7070a0',
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+    :root{
+      --bg:#07070f;
+      --surface:#0d0d1a;
+      --card:#10101e;
+      --card2:#13132a;
+      --accent:#6c63ff;
+      --accent-dim:rgba(108,99,255,0.15);
+      --accent2:#ff6584;
+      --accent2-dim:rgba(255,101,132,0.15);
+      --accent3:#43e97b;
+      --accent3-dim:rgba(67,233,123,0.12);
+      --gold:#ffd166;
+      --text:#eeeeff;
+      --muted:#7070a0;
+      --border:rgba(255,255,255,0.06);
+      --border-hi:rgba(108,99,255,0.3);
+      --font-head:'Syne',sans-serif;
+      --font-mono:'Space Mono',monospace;
+    }
+
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--text);font-family:var(--font-mono);overflow-x:hidden;line-height:1.6}
+
+    /* ─── CANVAS PARTICLES ─── */
+    #particles{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0.55}
+
+    /* ─── GLOW GRID ─── */
+    body::after{
+      content:'';position:fixed;inset:0;
+      background-image:linear-gradient(rgba(108,99,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(108,99,255,0.03) 1px,transparent 1px);
+      background-size:60px 60px;
+      pointer-events:none;z-index:0;
+    }
+
+    /* ─── NAV (custom CSS removed — replaced by Tailwind classes on the element) ─── */
+
+    /* nav underline hover effect — kept here as Tailwind can't do ::after pseudo easily */
+    .nav-link-tw{position:relative}
+    .nav-link-tw::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:var(--accent);transform:scaleX(0);transition:transform 0.2s}
+    .nav-link-tw:hover::after{transform:scaleX(1)}
+
+    /* mobile nav open state */
+    @media(max-width:768px){
+      .nav-links{display:none;flex-direction:column;position:fixed;top:62px;left:0;right:0;background:rgba(7,7,15,0.97);padding:2rem;gap:1.5rem;border-bottom:1px solid var(--border);z-index:199}
+      .nav-links.open{display:flex}
+    }
+
+    /* ─── HERO ─── */
+    #hero{
+      min-height:100vh;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;text-align:center;
+      padding:9rem 2rem 5rem;position:relative;z-index:1;
+    }
+
+    #hero::before{
+      content:'';position:absolute;
+      width:900px;height:900px;
+      background:radial-gradient(ellipse at center,rgba(108,99,255,0.13) 0%,transparent 70%);
+      top:50%;left:50%;transform:translate(-50%,-50%);
+      pointer-events:none;z-index:-1;
+    }
+
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:0.6rem;
+      background:rgba(108,99,255,0.1);
+      border:1px solid rgba(108,99,255,0.25);
+      color:var(--accent);font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;
+      padding:0.45rem 1.1rem;border-radius:999px;margin-bottom:2.2rem;
+      animation:fadeUp 0.5s ease both;
+    }
+    .hero-badge .pulse{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:pulseAnim 1.5s ease infinite}
+    @keyframes pulseAnim{0%,100%{box-shadow:0 0 0 0 rgba(108,99,255,0.6)}50%{box-shadow:0 0 0 6px rgba(108,99,255,0)}}
+
+    .hero-title{
+      font-family:var(--font-head);font-weight:800;
+      font-size:clamp(3.2rem,9vw,7rem);
+      line-height:0.95;letter-spacing:-0.05em;
+      margin-bottom:1.8rem;
+      animation:fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-title .grad{
+      background:linear-gradient(100deg,var(--accent) 0%,var(--accent2) 55%,var(--gold) 100%);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      display:block;
+    }
+
+    .hero-sub{
+      color:var(--muted);font-size:0.95rem;max-width:500px;
+      line-height:2;margin-bottom:3rem;
+      animation:fadeUp 0.7s 0.18s ease both;
+    }
+
+    .hero-btns{
+      display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;
+      animation:fadeUp 0.8s 0.28s ease both;
+    }
+
+    .btn-primary{
+      background:var(--accent);color:#fff;
+      padding:0.9rem 2.4rem;border:none;border-radius:8px;
+      font-family:var(--font-mono);font-size:0.82rem;font-weight:700;
+      cursor:pointer;letter-spacing:0.05em;text-decoration:none;
+      transition:transform 0.15s,box-shadow 0.2s;
+      position:relative;overflow:hidden;
+    }
+    .btn-primary::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(255,255,255,0.15),transparent);
+      opacity:0;transition:opacity 0.2s;
+    }
+    .btn-primary:hover{transform:translateY(-3px);box-shadow:0 10px 40px rgba(108,99,255,0.45)}
+    .btn-primary:hover::before{opacity:1}
+
+    .btn-ghost{
+      background:transparent;color:var(--text);
+      padding:0.9rem 2.4rem;
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:8px;font-family:var(--font-mono);
+      font-size:0.82rem;cursor:pointer;letter-spacing:0.05em;
+      text-decoration:none;transition:border-color 0.2s,transform 0.15s,background 0.2s;
+    }
+    .btn-ghost:hover{border-color:rgba(108,99,255,0.4);background:rgba(108,99,255,0.06);transform:translateY(-3px)}
+
+    /* ─── COUNTDOWN ─── */
+    .countdown{
+      display:flex;gap:0;margin-top:4.5rem;
+      animation:fadeUp 0.9s 0.4s ease both;
+    }
+    .cd-block{
+      display:flex;flex-direction:column;align-items:center;
+      background:rgba(255,255,255,0.03);
+      border:1px solid var(--border);
+      padding:1.2rem 1.8rem;
+      position:relative;
+    }
+    .cd-block:first-child{border-radius:10px 0 0 10px}
+    .cd-block:last-child{border-radius:0 10px 10px 0}
+    .cd-block:not(:last-child){border-right:none}
+    .cd-num{
+      font-family:var(--font-head);font-weight:800;
+      font-size:2.8rem;line-height:1;
+      background:linear-gradient(180deg,#fff,rgba(255,255,255,0.7));
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      min-width:3rem;text-align:center;
+    }
+    .cd-label{font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-top:0.4rem}
+    .cd-colon{font-size:2rem;color:var(--muted);padding:0 0.2rem;align-self:center;margin-bottom:0.5rem}
+
+    /* ─── STATS STRIP ─── */
+    .stats-strip{
+      display:flex;justify-content:center;gap:0;
+      margin-top:3rem;flex-wrap:wrap;
+      animation:fadeUp 1s 0.5s ease both;
+    }
+    .stat-item{
+      padding:1rem 2.5rem;border:1px solid var(--border);
+      display:flex;flex-direction:column;align-items:center;gap:0.2rem;
+    }
+    .stat-item:first-child{border-radius:10px 0 0 10px}
+    .stat-item:last-child{border-radius:0 10px 10px 0}
+    .stat-item:not(:last-child){border-right:none}
+    .stat-num{font-family:var(--font-head);font-weight:800;font-size:1.6rem;color:var(--accent)}
+    .stat-lbl{font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted)}
+
+    @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+    /* ─── TICKER ─── */
+    .ticker-wrap{
+      overflow:hidden;
+      background:linear-gradient(90deg,var(--accent),var(--accent2) 50%,var(--accent));
+      padding:0.65rem 0;white-space:nowrap;position:relative;z-index:1;
+    }
+    .ticker{display:inline-block;animation:tickerAnim 32s linear infinite;font-size:0.72rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#fff}
+    .ticker-item{margin:0 2rem}
+    .ticker-dot{opacity:0.4;margin:0 0.5rem}
+    @keyframes tickerAnim{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+    /* ─── SECTION COMMON ─── */
+    section{position:relative;z-index:1}
+    .section-eyebrow{font-size:0.68rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent);margin-bottom:0.6rem;font-weight:700}
+    .section-title{font-family:var(--font-head);font-weight:800;font-size:clamp(2rem,4vw,3rem);letter-spacing:-0.03em;line-height:1.05;margin-bottom:1rem}
+    .section-sub{color:var(--muted);font-size:0.88rem;line-height:1.9;max-width:480px}
+
+    /* ─── EVENTS ─── */
+    #events{padding:7rem 4rem;max-width:1280px;margin:0 auto}
+
+    .events-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3.5rem;flex-wrap:wrap;gap:1.5rem}
+
+    .events-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:1.5rem}
+
+    .event-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:16px;overflow:hidden;
+      transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;
+      cursor:pointer;position:relative;
+    }
+    .event-card:hover{transform:translateY(-6px);border-color:var(--border-hi);box-shadow:0 20px 60px rgba(108,99,255,0.15)}
+    .event-card::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(108,99,255,0.04),transparent);
+      opacity:0;transition:opacity 0.25s;pointer-events:none;border-radius:16px;
+    }
+    .event-card:hover::after{opacity:1}
+
+    .ev-banner{height:160px;display:flex;align-items:flex-end;padding:1.2rem;position:relative;overflow:hidden}
+    .ev-banner-bg{position:absolute;inset:0;opacity:0.9}
+    .ev-emoji{position:absolute;top:50%;left:50%;transform:translate(-50%,-56%);font-size:4.5rem;opacity:0.18;z-index:0;filter:blur(1px)}
+    .ev-tag{position:relative;z-index:1;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.28rem 0.75rem;border-radius:999px;font-weight:700;background:rgba(255,255,255,0.12);color:#fff;border:1px solid rgba(255,255,255,0.15);backdrop-filter:blur(8px)}
+    .ev-hack .ev-banner-bg{background:linear-gradient(135deg,#0f0626,#2d0f6e)}
+    .ev-music .ev-banner-bg{background:linear-gradient(135deg,#06061f,#1a0e3d)}
+    .ev-design .ev-banner-bg{background:linear-gradient(135deg,#1a0013,#5c0035)}
+    .ev-game .ev-banner-bg{background:linear-gradient(135deg,#051a05,#0d4a1a)}
+    .ev-startup .ev-banner-bg{background:linear-gradient(135deg,#1a0a00,#5c2200)}
+    .ev-ai .ev-banner-bg{background:linear-gradient(135deg,#001a1a,#005c50)}
+
+    .ev-hack{border-top:2px solid #6c63ff}
+    .ev-music{border-top:2px solid #4466ff}
+    .ev-design{border-top:2px solid #ff6584}
+    .ev-game{border-top:2px solid #43e97b}
+    .ev-startup{border-top:2px solid var(--gold)}
+    .ev-ai{border-top:2px solid #00d4c8}
+
+    .ev-body{padding:1.4rem 1.6rem 1.8rem}
+    .ev-name{font-family:var(--font-head);font-weight:700;font-size:1.25rem;margin-bottom:0.5rem}
+    .ev-meta{display:flex;gap:1.2rem;font-size:0.7rem;color:var(--muted);margin-bottom:1.2rem}
+    .ev-prize-row{display:flex;align-items:baseline;gap:0.5rem}
+    .ev-prize{font-family:var(--font-head);font-size:1.7rem;font-weight:800;color:var(--accent3)}
+    .ev-prize-lbl{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.08em}
+
+    /* ─── SCHEDULE ─── */
+    #schedule{
+      padding:7rem 4rem;
+      background:var(--surface);
+      border-top:1px solid var(--border);
+      border-bottom:1px solid var(--border);
+    }
+    .sched-inner{max-width:900px;margin:0 auto}
+    .sched-hd{margin-bottom:3rem}
+
+    .day-tabs{display:flex;gap:0.6rem;margin-bottom:2.5rem;flex-wrap:wrap}
+    .day-tab{
+      background:transparent;border:1px solid var(--border);
+      color:var(--muted);padding:0.55rem 1.4rem;
+      border-radius:8px;font-family:var(--font-mono);font-size:0.72rem;
+      cursor:pointer;transition:all 0.2s;letter-spacing:0.04em;
+    }
+    .day-tab.active{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 4px 16px rgba(108,99,255,0.3)}
+    .day-tab:hover:not(.active){border-color:rgba(255,255,255,0.18);color:var(--text)}
+
+    .sched-list{display:flex;flex-direction:column}
+    .sched-item{
+      display:grid;grid-template-columns:100px 1fr auto;
+      gap:1rem;padding:1.3rem 1rem;
+      border-bottom:1px solid var(--border);
+      align-items:center;
+      opacity:0;transform:translateX(-16px);
+      animation:slideIn 0.35s ease forwards;
+      transition:background 0.2s;
+      border-radius:8px;
+    }
+    .sched-item:hover{background:rgba(108,99,255,0.04)}
+    @keyframes slideIn{to{opacity:1;transform:translateX(0)}}
+    .sched-time{font-size:0.72rem;color:var(--muted);font-weight:700}
+    .sched-name{font-weight:700;font-size:0.95rem}
+    .sched-venue{font-size:0.72rem;color:var(--muted);margin-top:0.2rem}
+    .sched-badge{font-size:0.6rem;padding:0.25rem 0.7rem;border-radius:999px;font-weight:700;letter-spacing:0.06em;white-space:nowrap}
+    .b-hack{background:rgba(108,99,255,0.15);color:#9d96ff}
+    .b-music{background:rgba(67,233,123,0.12);color:#43e97b}
+    .b-talk{background:rgba(255,101,132,0.12);color:#ff6584}
+    .b-work{background:rgba(255,209,102,0.12);color:#ffd166}
+
+    /* ─── SPEAKERS ─── */
+    #speakers{padding:7rem 4rem;max-width:1280px;margin:0 auto}
+    .spk-hd{margin-bottom:3.5rem}
+    .spk-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:1.5rem}
+
+    .spk-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:16px;padding:2rem 1.5rem;text-align:center;
+      transition:transform 0.25s,border-color 0.25s,box-shadow 0.25s;
+      position:relative;overflow:hidden;
+    }
+    .spk-card::before{
+      content:'';position:absolute;inset:-1px;
+      background:linear-gradient(135deg,rgba(108,99,255,0.2),rgba(255,101,132,0.15),transparent 60%);
+      border-radius:16px;opacity:0;transition:opacity 0.25s;z-index:0;
+    }
+    .spk-card:hover{transform:translateY(-5px);border-color:rgba(108,99,255,0.2);box-shadow:0 16px 48px rgba(108,99,255,0.12)}
+    .spk-card:hover::before{opacity:1}
+    .spk-card > *{position:relative;z-index:1}
+
+    .spk-avatar{
+      width:76px;height:76px;border-radius:50%;
+      margin:0 auto 1.2rem;display:flex;align-items:center;justify-content:center;
+      font-family:var(--font-head);font-weight:800;font-size:1.5rem;color:#fff;
+      position:relative;
+    }
+    .spk-avatar::after{
+      content:'';position:absolute;inset:-3px;border-radius:50%;
+      background:inherit;opacity:0.3;filter:blur(8px);z-index:-1;
+    }
+    .av1{background:linear-gradient(135deg,#6c63ff,#a78bfa)}
+    .av2{background:linear-gradient(135deg,#ff6584,#f472b6)}
+    .av3{background:linear-gradient(135deg,#43e97b,#38bdf8)}
+    .av4{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+    .av5{background:linear-gradient(135deg,#06b6d4,#6366f1)}
+    .av6{background:linear-gradient(135deg,#10b981,#34d399)}
+    .spk-name{font-family:var(--font-head);font-weight:700;font-size:1rem;margin-bottom:0.25rem}
+    .spk-role{font-size:0.72rem;color:var(--muted);line-height:1.5}
+    .spk-co{color:var(--accent);font-size:0.68rem;margin-top:0.4rem;letter-spacing:0.04em}
+
+    /* ─── SPONSORS ─── */
+    #sponsors{padding:4rem;text-align:center;border-top:1px solid var(--border)}
+    .spons-label{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:2.5rem}
+    .spons-row{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:3rem}
+    .spons-logo{
+      font-family:var(--font-head);font-weight:700;font-size:1.15rem;
+      color:var(--muted);letter-spacing:-0.02em;opacity:0.35;
+      transition:opacity 0.2s,color 0.2s;
+    }
+    .spons-logo:hover{opacity:0.85;color:var(--text)}
+    .spons-logo sup{font-size:0.55em;color:var(--accent);opacity:1}
+
+    /* ─── REGISTER ─── */
+    #register{
+      padding:7rem 4rem;
+      background:var(--surface);
+      border-top:1px solid var(--border);
+    }
+    .reg-inner{max-width:680px;margin:0 auto}
+    .reg-inner .section-title{margin-bottom:0.5rem}
+    .reg-inner .section-sub{margin:0 auto 2.5rem}
+
+    .form-card{
+      background:rgba(255,255,255,0.02);
+      border:1px solid var(--border);
+      border-radius:20px;padding:2.5rem;
+      backdrop-filter:blur(4px);
+    }
+
+    .reg-form{display:flex;flex-direction:column;gap:1.2rem}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem}
+    .field{display:flex;flex-direction:column;gap:0.45rem}
+    .field label{font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .field input,.field select{
+      background:rgba(255,255,255,0.04);
+      border:1px solid var(--border);
+      border-radius:8px;padding:0.8rem 1rem;
+      color:var(--text);font-family:var(--font-mono);font-size:0.82rem;
+      transition:border-color 0.2s,background 0.2s;outline:none;
+    }
+    .field input:focus,.field select:focus{border-color:var(--accent);background:rgba(108,99,255,0.06)}
+    .field input::placeholder{color:var(--muted)}
+    .field select option{background:#13132a}
+
+    .reg-btn{width:100%;padding:1rem;font-size:0.88rem;margin-top:0.5rem;border-radius:10px}
+
+    .success-msg{
+      display:none;
+      background:rgba(67,233,123,0.08);
+      border:1px solid rgba(67,233,123,0.2);
+      border-radius:12px;padding:2rem;
+      text-align:center;color:var(--accent3);
+      font-size:0.9rem;margin-top:1.5rem;
+      animation:fadeUp 0.4s ease both;
+    }
+    .success-emoji{font-size:2.5rem;display:block;margin-bottom:0.75rem}
+
+    /* ─── FOOTER ─── */
+    footer{
+      border-top:1px solid var(--border);
+      padding:3rem 4rem;
+      display:flex;justify-content:space-between;align-items:center;
+      flex-wrap:wrap;gap:1.5rem;
+      position:relative;z-index:1;
+    }
+    footer::before{
+      content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+      background:linear-gradient(90deg,transparent,var(--accent),transparent);
+      opacity:0.3;
+    }
+    .ft-copy{font-size:0.7rem;color:var(--muted);margin-top:0.4rem}
+    .ft-links{display:flex;gap:1.8rem}
+    .ft-links a{
+      color:var(--muted);font-size:0.72rem;text-decoration:none;
+      letter-spacing:0.06em;transition:color 0.2s;
+    }
+    .ft-links a:hover{color:var(--text)}
+
+    /* ─── MOBILE ─── */
+    @media(max-width:768px){
+      #events,#speakers,#schedule,#register,#sponsors{padding:4rem 1.5rem}
+      .form-row{grid-template-columns:1fr}
+      footer{flex-direction:column;text-align:center;padding:2rem 1.5rem}
+      .events-hd{flex-direction:column;align-items:flex-start}
+      .cd-block{padding:0.9rem 1.2rem}
+      .cd-num{font-size:2rem}
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- NAV — styled with Tailwind -->
+<nav id="navbar"
+  class="fixed top-0 left-0 right-0 z-[200] flex items-center justify-between px-12 py-4 border-b backdrop-blur-xl transition-all duration-300"
+  style="background:rgba(7,7,15,0.8); border-color:rgba(255,255,255,0.06);">
+
+  <a href="#" class="font-head font-extrabold text-xl tracking-tight text-white no-underline flex items-center gap-0">
+    campusfest<span style="color:var(--accent)" class="font-normal">.dev</span>
+  </a>
+
+  <ul class="nav-links hidden md:flex gap-8 list-none items-center" id="navLinks">
+    <li>
+      <a href="#events" class="nav-link-tw text-[0.72rem] tracking-[0.1em] uppercase no-underline transition-colors duration-200 hover:text-white" style="color:var(--muted)">Events</a>
+    </li>
+    <li>
+      <a href="#schedule" class="nav-link-tw text-[0.72rem] tracking-[0.1em] uppercase no-underline transition-colors duration-200 hover:text-white" style="color:var(--muted)">Schedule</a>
+    </li>
+    <li>
+      <a href="#speakers" class="nav-link-tw text-[0.72rem] tracking-[0.1em] uppercase no-underline transition-colors duration-200 hover:text-white" style="color:var(--muted)">Speakers</a>
+    </li>
+    <li>
+      <a href="#register"
+        class="text-[0.72rem] font-bold tracking-[0.08em] uppercase no-underline px-5 py-[0.45rem] rounded-md text-white transition-all duration-150 hover:-translate-y-px hover:shadow-[0_4px_20px_rgba(108,99,255,0.4)]"
+        style="background:var(--accent)">
+        Register Free ↗
+      </a>
+    </li>
+  </ul>
+
+  <button id="hamburger" aria-label="Menu"
+    class="md:hidden bg-transparent text-white text-lg cursor-pointer rounded px-[0.6rem] py-[0.4rem]"
+    style="border:1px solid var(--border)">
+    ☰
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-badge">
+    <span class="pulse"></span>
+    Annual Tech Festival · Sep 12–14, 2025
+  </div>
+
+  <h1 class="hero-title">
+    Where Campus<br>
+    <span class="grad">Meets Code</span>
+  </h1>
+
+  <p class="hero-sub">
+    Hackathons · Live Music · Design Sprints · Startup Pitches —<br>
+    3 epic days that define your college story.
+  </p>
+
+  <div class="hero-btns">
+    <a href="#register" class="btn-primary">Register Now — It's Free</a>
+    <a href="#events" class="btn-ghost">Explore Events →</a>
+  </div>
+
+  <div class="countdown">
+    <div class="cd-block"><span class="cd-num" id="cd-d">00</span><span class="cd-label">Days</span></div>
+    <span class="cd-colon">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-h">00</span><span class="cd-label">Hours</span></div>
+    <span class="cd-colon">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-m">00</span><span class="cd-label">Mins</span></div>
+    <span class="cd-colon">:</span>
+    <div class="cd-block"><span class="cd-num" id="cd-s">00</span><span class="cd-label">Secs</span></div>
+  </div>
+
+  <div class="stats-strip">
+    <div class="stat-item"><span class="stat-num">3000+</span><span class="stat-lbl">Attendees</span></div>
+    <div class="stat-item"><span class="stat-num">₹5L</span><span class="stat-lbl">Prize Pool</span></div>
+    <div class="stat-item"><span class="stat-num">40+</span><span class="stat-lbl">Events</span></div>
+    <div class="stat-item"><span class="stat-num">20+</span><span class="stat-lbl">Speakers</span></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap" aria-hidden="true">
+  <div class="ticker" id="tickerInner"></div>
+</div>
+
+<!-- EVENTS -->
+<section id="events">
+  <div class="events-hd">
+    <div>
+      <p class="section-eyebrow">// What's on</p>
+      <h2 class="section-title">Events & Tracks</h2>
+      <p class="section-sub">Choose your adventure. Compete, create, learn, or vibe — we've got it all.</p>
+    </div>
+    <a href="#register" class="btn-primary">Get Your Pass →</a>
+  </div>
+
+  <div class="events-grid">
+    <div class="event-card ev-hack">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">⚡</span>
+        <span class="ev-tag">24 Hours</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">Hackathon</div>
+        <div class="ev-meta"><span>📅 Sep 12–13</span><span>📍 CS Block A</span></div>
+        <div class="ev-prize-row"><span class="ev-prize">₹1,50,000</span><span class="ev-prize-lbl">Prize Pool</span></div>
+      </div>
+    </div>
+
+    <div class="event-card ev-music">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">🎸</span>
+        <span class="ev-tag">Night Concert</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">Battle of Bands</div>
+        <div class="ev-meta"><span>📅 Sep 13</span><span>📍 Amphitheater</span></div>
+        <div class="ev-prize-row"><span class="ev-prize">₹75,000</span><span class="ev-prize-lbl">Prize Pool</span></div>
+      </div>
+    </div>
+
+    <div class="event-card ev-design">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">🎨</span>
+        <span class="ev-tag">6hr Sprint</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">Design Sprint</div>
+        <div class="ev-meta"><span>📅 Sep 14</span><span>📍 Design Lab</span></div>
+        <div class="ev-prize-row"><span class="ev-prize">₹50,000</span><span class="ev-prize-lbl">Prize Pool</span></div>
+      </div>
+    </div>
+
+    <div class="event-card ev-game">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">🎮</span>
+        <span class="ev-tag">48 Hours</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">Game Jam</div>
+        <div class="ev-meta"><span>📅 Sep 12–14</span><span>📍 Innovation Hub</span></div>
+        <div class="ev-prize-row"><span class="ev-prize">₹60,000</span><span class="ev-prize-lbl">Prize Pool</span></div>
+      </div>
+    </div>
+
+    <div class="event-card ev-startup">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">🚀</span>
+        <span class="ev-tag">Pitch Day</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">Startup Pitches</div>
+        <div class="ev-meta"><span>📅 Sep 14</span><span>📍 Auditorium</span></div>
+        <div class="ev-prize-row"><span class="ev-prize">₹1,00,000</span><span class="ev-prize-lbl">Prize Pool</span></div>
+      </div>
+    </div>
+
+    <div class="event-card ev-ai">
+      <div class="ev-banner">
+        <div class="ev-banner-bg"></div>
+        <span class="ev-emoji">🤖</span>
+        <span class="ev-tag">Workshop</span>
+      </div>
+      <div class="ev-body">
+        <div class="ev-name">AI Masterclass</div>
+        <div class="ev-meta"><span>📅 Sep 12</span><span>📍 Seminar Hall</span></div>
+        <div class="ev-prize-row"><span class="ev-prize" style="color:var(--accent)">Free</span><span class="ev-prize-lbl">Open to All</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="sched-inner">
+    <div class="sched-hd">
+      <p class="section-eyebrow">// Day by day</p>
+      <h2 class="section-title">Full Schedule</h2>
+    </div>
+    <div class="day-tabs">
+      <button class="day-tab active" onclick="showDay(0)">Day 1 — Sep 12</button>
+      <button class="day-tab" onclick="showDay(1)">Day 2 — Sep 13</button>
+      <button class="day-tab" onclick="showDay(2)">Day 3 — Sep 14</button>
+    </div>
+    <div class="sched-list" id="schedList"></div>
+  </div>
+</section>
+
+<!-- SPEAKERS -->
+<section id="speakers">
+  <div class="spk-hd">
+    <p class="section-eyebrow">// Lineup</p>
+    <h2 class="section-title">Speakers & Mentors</h2>
+    <p class="section-sub">Industry leaders, founders, and researchers share their journey.</p>
+  </div>
+  <div class="spk-grid">
+    <div class="spk-card"><div class="spk-avatar av1">AR</div><div class="spk-name">Aarav Rao</div><div class="spk-role">Co-founder & CTO</div><div class="spk-co">Skyline AI</div></div>
+    <div class="spk-card"><div class="spk-avatar av2">PM</div><div class="spk-name">Priya Mehta</div><div class="spk-role">Design Director</div><div class="spk-co">Figma India</div></div>
+    <div class="spk-card"><div class="spk-avatar av3">RK</div><div class="spk-name">Rohan Kapoor</div><div class="spk-role">Senior Engineer</div><div class="spk-co">Google</div></div>
+    <div class="spk-card"><div class="spk-avatar av4">NS</div><div class="spk-name">Nisha Shah</div><div class="spk-role">Venture Partner</div><div class="spk-co">Accel India</div></div>
+    <div class="spk-card"><div class="spk-avatar av5">VT</div><div class="spk-name">Vikram Tiwari</div><div class="spk-role">ML Researcher</div><div class="spk-co">IIT Bombay</div></div>
+    <div class="spk-card"><div class="spk-avatar av6">SA</div><div class="spk-name">Shreya Anand</div><div class="spk-role">Founder</div><div class="spk-co">EduTech Labs</div></div>
+  </div>
+</section>
+
+<!-- SPONSORS -->
+<section id="sponsors">
+  <div class="spons-label">Powered by industry leaders</div>
+  <div class="spons-row">
+    <div class="spons-logo">TECH<sup>corp</sup></div>
+    <div class="spons-logo">Nexus<sup>io</sup></div>
+    <div class="spons-logo">OpenBuild</div>
+    <div class="spons-logo">Byte<sup>labs</sup></div>
+    <div class="spons-logo">DevCraft</div>
+    <div class="spons-logo">Lumina<sup>vc</sup></div>
+  </div>
+</section>
+
+<!-- REGISTER -->
+<section id="register">
+  <div class="reg-inner">
+    <p class="section-eyebrow" style="text-align:center">// Join the fest</p>
+    <h2 class="section-title" style="text-align:center">Register for Free</h2>
+    <p class="section-sub" style="text-align:center;margin:0 auto 2.5rem">Spots are limited. Lock in your place before the fest fills up.</p>
+
+    <div class="form-card">
+      <div class="reg-form" id="regForm">
+        <div class="form-row">
+          <div class="field"><label>First Name</label><input type="text" id="fname" placeholder="Aarav" autocomplete="given-name"/></div>
+          <div class="field"><label>Last Name</label><input type="text" id="lname" placeholder="Rao" autocomplete="family-name"/></div>
+        </div>
+        <div class="field"><label>College Email</label><input type="email" id="email" placeholder="aarav@college.edu" autocomplete="email"/></div>
+        <div class="form-row">
+          <div class="field"><label>College Name</label><input type="text" id="college" placeholder="IIT / BITS / NIT..."/></div>
+          <div class="field"><label>Year of Study</label>
+            <select id="year">
+              <option value="">Select year</option>
+              <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option><option>Postgraduate</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Primary Track</label>
+          <select id="track">
+            <option value="">Choose a track</option>
+            <option>Hackathon</option><option>Battle of Bands</option><option>Design Sprint</option>
+            <option>Game Jam</option><option>Startup Pitches</option><option>AI Masterclass</option><option>All Events</option>
+          </select>
+        </div>
+        <button class="btn-primary reg-btn" onclick="handleRegister()">Secure My Spot →</button>
+      </div>
+      <div class="success-msg" id="successMsg">
+        <span class="success-emoji">🎉</span>
+        You're registered! Check your college email for the confirmation link.<br>See you at CampusFest 2025!
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <a href="#" class="nav-logo">campusfest<span class="ext">.dev</span></a>
+    <div class="ft-copy">© 2025 CampusFest. Made with ♥ for students everywhere.</div>
+  </div>
+  <div class="ft-links">
+    <a href="#">Twitter</a>
+    <a href="#">Instagram</a>
+    <a href="#">Discord</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+/* ── PARTICLES ── */
+(function(){
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+  resize(); window.addEventListener('resize',resize);
+  const count=80;
+  for(let i=0;i<count;i++){
+    pts.push({
+      x:Math.random()*2000,y:Math.random()*1200,
+      vx:(Math.random()-0.5)*0.25,vy:(Math.random()-0.5)*0.25,
+      r:Math.random()*1.5+0.5,
+      hue:Math.random()>0.6?270:340,
+    });
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`hsla(${p.hue},80%,70%,0.6)`;
+      ctx.fill();
+    });
+    // connect nearby
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x, dy=pts[i].y-pts[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<130){
+          ctx.beginPath();
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.strokeStyle=`rgba(108,99,255,${0.08*(1-d/130)})`;
+          ctx.lineWidth=0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── COUNTDOWN ── */
+const target=new Date('2025-09-12T09:00:00');
+function updateCD(){
+  const diff=target-new Date();
+  if(diff<=0)return;
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor((diff%86400000)/3600000);
+  const m=Math.floor((diff%3600000)/60000);
+  const s=Math.floor((diff%60000)/1000);
+  document.getElementById('cd-d').textContent=String(d).padStart(2,'0');
+  document.getElementById('cd-h').textContent=String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(s).padStart(2,'0');
+}
+updateCD(); setInterval(updateCD,1000);
+
+/* ── TICKER ── */
+const tickerItems=['⚡ Hackathon','🎸 Battle of Bands','🎨 Design Sprint','🚀 Startup Pitches','🎮 Game Jam','🤖 AI Masterclass','🏆 ₹5L in Prizes','🎓 3000+ Students'];
+const tickerHTML=tickerItems.map(t=>`<span class="ticker-item">${t}</span><span class="ticker-dot">◆</span>`).join('');
+document.getElementById('tickerInner').innerHTML=tickerHTML+tickerHTML;
+
+/* ── SCHEDULE ── */
+const days=[
+  [{time:'09:00 AM',name:'Opening Ceremony & Keynote',venue:'Main Auditorium',b:'b-talk',l:'Keynote'},
+   {time:'10:30 AM',name:'Hackathon Kickoff',venue:'CS Block A',b:'b-hack',l:'Hack'},
+   {time:'11:00 AM',name:'AI Masterclass — Intro to LLMs',venue:'Seminar Hall',b:'b-work',l:'Workshop'},
+   {time:'02:00 PM',name:'Game Jam Begins',venue:'Innovation Hub',b:'b-hack',l:'Game'},
+   {time:'05:00 PM',name:'Mentor Speed Sessions',venue:'Design Lab',b:'b-talk',l:'Mentor'},
+   {time:'08:00 PM',name:'Welcome Night / DJ Set',venue:'Amphitheater',b:'b-music',l:'Music'}],
+  [{time:'09:00 AM',name:'Hackathon Check-in',venue:'CS Block A',b:'b-hack',l:'Hack'},
+   {time:'11:00 AM',name:'Design Sprint Challenge',venue:'Design Lab',b:'b-work',l:'Design'},
+   {time:'02:00 PM',name:'Panel: Future of Tech in India',venue:'Auditorium',b:'b-talk',l:'Panel'},
+   {time:'04:00 PM',name:'Startup Pitch Prelims',venue:'Seminar Hall',b:'b-work',l:'Pitch'},
+   {time:'07:00 PM',name:'Battle of Bands — Round 1',venue:'Main Amphitheater',b:'b-music',l:'Music'},
+   {time:'09:00 PM',name:'Battle of Bands — Finals',venue:'Main Amphitheater',b:'b-music',l:'Finals'}],
+  [{time:'09:00 AM',name:'Hackathon Final Submissions',venue:'CS Block A',b:'b-hack',l:'Hack'},
+   {time:'10:00 AM',name:'Game Jam Showcase',venue:'Innovation Hub',b:'b-hack',l:'Game'},
+   {time:'11:00 AM',name:'Design Sprint Judging',venue:'Design Lab',b:'b-work',l:'Design'},
+   {time:'01:00 PM',name:'Startup Pitch Finals',venue:'Auditorium',b:'b-work',l:'Pitch'},
+   {time:'03:30 PM',name:'Hackathon Demo Day',venue:'CS Block A',b:'b-hack',l:'Demo'},
+   {time:'05:30 PM',name:'Closing Ceremony & Awards',venue:'Main Auditorium',b:'b-talk',l:'Awards'}]
+];
+
+function showDay(idx){
+  document.querySelectorAll('.day-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.getElementById('schedList').innerHTML=days[idx].map((it,i)=>`
+    <div class="sched-item" style="animation-delay:${i*0.065}s">
+      <span class="sched-time">${it.time}</span>
+      <div><div class="sched-name">${it.name}</div><div class="sched-venue">${it.venue}</div></div>
+      <span class="sched-badge ${it.b}">${it.l}</span>
+    </div>`).join('');
+}
+showDay(0);
+
+/* ── REGISTER ── */
+function handleRegister(){
+  const f=document.getElementById('fname').value.trim();
+  const e=document.getElementById('email').value.trim();
+  const c=document.getElementById('college').value.trim();
+  if(!f||!e||!c){alert('Please fill in your name, email, and college!');return;}
+  document.getElementById('regForm').style.display='none';
+  document.getElementById('successMsg').style.display='block';
+}
+
+/* ── NAV scroll effect ── */
+window.addEventListener('scroll',()=>{
+  const nav = document.getElementById('navbar');
+  if(scrollY>60){
+    nav.style.padding='0.7rem 3rem';
+    nav.style.borderBottomColor='rgba(108,99,255,0.15)';
+  } else {
+    nav.style.padding='1rem 3rem';
+    nav.style.borderBottomColor='rgba(255,255,255,0.06)';
+  }
+});
+
+/* ── HAMBURGER ── */
+document.getElementById('hamburger').addEventListener('click',()=>{
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+/* ── SCROLL REVEAL ── */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:0.08});
+
+document.querySelectorAll('.event-card,.spk-card,.stat-item').forEach((el,i)=>{
+  el.style.cssText+='opacity:0;transform:translateY(22px);transition:opacity 0.5s ease,transform 0.5s ease';
+  el.style.transitionDelay=`${(i%4)*0.07}s`;
+  io.observe(el);
+});
+</script>
+</body>
+</html>
